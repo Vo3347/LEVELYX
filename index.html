@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEVELYX Game Hub</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+:root{--bg:#070812;--panel:#101225;--panel2:#151933;--text:#f5f7ff;--muted:#9ba3c7;--purple:#8b5cff;--blue:#4cc9ff;--line:#252b4a}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(circle at 80% 0%,#25134c 0,#070812 38%),var(--bg);color:var(--text);min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+header{position:sticky;top:0;z-index:50;background:rgba(7,8,18,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{max-width:1250px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:1px;font-size:20px}
+.logoMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;box-shadow:0 0 24px #744cff66}
+.logoMark b{font-size:18px}
+nav{display:flex;gap:18px;flex:1}
+nav a{color:#c8cce0;font-weight:700;font-size:14px}
+nav a:hover{color:white}
+.aiBtn,.primary{border:0;border-radius:12px;padding:11px 16px;color:white;background:linear-gradient(135deg,#6d43ff,#9d63ff);font-weight:800;box-shadow:0 8px 30px #7d50ff33}
+.container{max-width:1250px;margin:auto;padding:0 20px}
+.hero{padding:78px 0 45px;display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center}
+.kicker{color:#9c8cff;font-weight:900;letter-spacing:3px;font-size:12px}
+h1{font-size:clamp(42px,6vw,76px);line-height:.98;margin:14px 0}
+.hero p{color:var(--muted);font-size:18px;max-width:650px;line-height:1.6}
+.search{margin-top:25px;display:flex;background:#101329;border:1px solid #30365a;border-radius:16px;padding:7px;max-width:720px}
+.search input{flex:1;background:transparent;border:0;outline:0;color:white;padding:13px;font-size:16px}
+.search button{border:0;border-radius:11px;padding:12px 18px;background:#fff;color:#0a0b14;font-weight:900}
+.heroCard{background:linear-gradient(145deg,#171a35,#0d0e1b);border:1px solid var(--line);border-radius:26px;padding:25px;box-shadow:0 30px 80px #0008}
+.heroCard h3{font-size:23px;margin-bottom:10px}
+.heroCard p{font-size:14px}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.pill{border:1px solid #343b62;background:#11152b;color:#bfc6e8;border-radius:999px;padding:7px 10px;font-size:12px}
+.section{padding:38px 0}
+.sectionHead{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:18px}
+.sectionHead h2{font-size:30px}
+.sectionHead p{color:var(--muted);font-size:14px;margin-top:5px}
+.filters{display:flex;gap:8px;overflow:auto;padding-bottom:8px;margin-bottom:18px}
+.filter{white-space:nowrap;border:1px solid var(--line);background:#0e1122;color:#bfc6e8;border-radius:999px;padding:9px 13px}
+.filter.active,.filter:hover{background:#7c51ff;color:white;border-color:#8f6aff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:linear-gradient(145deg,#12152b,#0c0e1b);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:.2s}
+.card:hover{transform:translateY(-4px);border-color:#4d5790}
+.cover{height:180px;background:linear-gradient(135deg,#18213b,#321b57);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.coverFallback{font-size:50px;font-weight:900;color:white;text-shadow:0 8px 30px #000}
+.badge{position:absolute;top:10px;left:10px;background:#080a13cc;border:1px solid #ffffff22;border-radius:8px;padding:5px 8px;font-size:11px}
+.cardBody{padding:14px}
+.cardBody h3{font-size:17px;margin-bottom:6px}
+.meta{color:var(--muted);font-size:12px;line-height:1.5}
+.actions{display:flex;gap:8px;margin-top:13px}
+.smallBtn{flex:1;border:1px solid #353b61;background:#151a31;color:white;border-radius:10px;padding:9px;font-weight:800}
+.smallBtn.primarySmall{background:#6d43ff;border-color:#6d43ff}
+.resultBox{margin-top:14px;display:none}
+.resultBox.show{display:block}
+.notice{padding:15px;border:1px solid #343b62;background:#0e1122;border-radius:14px;color:#c8cce0}
+.liveGrid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.liveMain,.communityBox,.aiPanel{background:#101329;border:1px solid var(--line);border-radius:20px;padding:20px}
+.liveScreen{height:300px;border-radius:15px;background:radial-gradient(circle,#27204c,#080914 65%);display:grid;place-items:center;text-align:center}
+.liveDot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff4d72;box-shadow:0 0 15px #ff4d72;margin-right:6px}
+.streamList{display:grid;gap:10px}
+.stream{display:flex;gap:12px;align-items:center;padding:12px;background:#0c0f20;border:1px solid #232946;border-radius:12px}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#4cc9ff,#8b5cff);display:grid;place-items:center;font-weight:900}
+.stream small{color:var(--muted)}
+.communityGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+textarea{width:100%;min-height:110px;background:#0b0e1d;color:white;border:1px solid #30365a;border-radius:12px;padding:12px;outline:0;resize:vertical}
+.post{padding:15px;border:1px solid #282e4e;background:#0c0f20;border-radius:15px;margin-top:12px}
+.postTop{display:flex;justify-content:space-between;gap:10px}
+.postText{margin-top:10px;line-height:1.5;color:#dce0f4}
+.postActions{display:flex;gap:8px;margin-top:10px}
+.aiPanel{display:none;position:fixed;inset:0;background:#0009;z-index:100;align-items:center;justify-content:center;padding:20px}
+.aiPanel.open{display:flex}
+.aiBox{width:min(650px,100%);background:#0e1122;border:1px solid #3c4675;border-radius:22px;padding:22px;box-shadow:0 30px 100px #000}
+.aiBoxTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.close{background:#1a1f38;color:white;border:1px solid #343b62;border-radius:10px;padding:8px 12px}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+select{width:100%;background:#0a0d1a;color:white;border:1px solid #30365a;border-radius:11px;padding:12px}
+.aiResults{margin-top:16px;display:grid;gap:10px}
+.aiResult{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;background:#151a31;border-radius:12px}
+
+.accountFab{position:fixed;right:22px;bottom:22px;z-index:80;border:1px solid #4b3a83;background:linear-gradient(135deg,#17142e,#28194c);color:#fff;border-radius:16px;padding:12px 15px;display:flex;align-items:center;gap:9px;box-shadow:0 15px 45px #0009;font-weight:900}
+.accountFab:hover{transform:translateY(-2px);border-color:#8b5cff}
+.accountDot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#4cc9ff,#8b5cff);font-size:13px}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:120;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modalBox{width:min(680px,100%);max-height:90vh;overflow:auto;background:#0e1122;border:1px solid #3c4675;border-radius:22px;padding:24px;box-shadow:0 30px 100px #000}
+.modalTop{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
+.input{width:100%;background:#0a0d1a;color:white;border:1px solid #30365a;border-radius:11px;padding:12px;outline:0}
+.formStack{display:grid;gap:10px}
+.helper{color:var(--muted);font-size:12px;line-height:1.5}
+.pexHero{background:linear-gradient(145deg,#181432,#101329);border:1px solid #393263;border-radius:22px;padding:24px;display:grid;grid-template-columns:1.3fr .7fr;gap:20px;align-items:center}
+.pexBadge{display:inline-block;padding:6px 10px;border-radius:999px;background:#251b50;border:1px solid #5d46a3;color:#cfc5ff;font-size:11px;font-weight:900;letter-spacing:1px}
+.pexGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.pexCard{background:#0c0f20;border:1px solid #292f50;border-radius:16px;padding:17px}
+.pexCard h3{margin:8px 0}
+.price{font-size:25px;font-weight:900;margin:10px 0}
+.ad{min-height:92px;border:1px dashed #414967;background:linear-gradient(135deg,#0d1020,#141831);border-radius:15px;display:flex;align-items:center;justify-content:center;text-align:center;color:#7f87aa;margin-top:16px;padding:15px}
+.ad strong{display:block;color:#cfd4ea;margin-bottom:4px}
+@media(max-width:900px){.pexHero{grid-template-columns:1fr}.pexGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.pexGrid{grid-template-columns:1fr}.accountFab{right:12px;bottom:12px}}
+footer{border-top:1px solid var(--line);margin-top:45px;padding:35px 0;color:#7f87aa}
+.empty{padding:35px;text-align:center;color:var(--muted);border:1px dashed #333a5e;border-radius:16px;grid-column:1/-1}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.liveGrid,.communityGrid{grid-template-columns:1fr}}
+@media(max-width:600px){nav{display:none}.grid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.hero{padding-top:45px}h1{font-size:48px}}
+
+.languagePill{border:1px solid #343b62;background:#11152b;color:#dfe4ff;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:800}
+.languageModal .modalBox{width:min(560px,100%)}
+.languageOptions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.languageOption{border:1px solid #30365a;background:#101329;color:white;border-radius:13px;padding:13px;text-align:left;font-weight:800}
+.languageOption.active,.languageOption:hover{border-color:#8b5cff;background:#1a1533}
+.perkSearch{margin-top:15px;display:flex;gap:8px}
+.perkSearch input{flex:1}
+.perkGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.perkCard{background:#0c0f20;border:1px solid #292f50;border-radius:16px;padding:17px}
+.perkCard.featured{border-color:#7a58d8;box-shadow:0 0 30px #7a58d822}
+.perkPrice{font-size:23px;font-weight:900;margin:8px 0}.perkPrice small{font-size:12px;color:#9ba3c7;font-weight:600}
+@media(max-width:900px){.perkGrid{grid-template-columns:1fr 1fr}.languageOptions{grid-template-columns:1fr}}
+@media(max-width:600px){.perkGrid{grid-template-columns:1fr}}
+
+.walletBar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.walletChip{padding:12px 15px;border:1px solid #343b62;background:#0e1122;border-radius:14px}.walletChip b{color:#fff}.packageGrid,.perkGrid2{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}.packageCard,.perkCard2{background:#0c0f20;border:1px solid #292f50;border-radius:16px;padding:17px}.packageCard:hover,.perkCard2:hover{border-color:#6f55c7}.pexAmount{font-size:28px;font-weight:900}.realPrice{font-size:18px;font-weight:800;margin:8px 0}.walletNotice{margin-top:14px;padding:12px;border:1px solid #30365a;border-radius:12px;color:#bfc6e8;background:#0b0e1d}.statusGood{color:#8ff0ba}.statusBad{color:#ff9db3}.perkPrice{font-size:23px;font-weight:900;margin:8px 0}.perkPrice small{font-size:12px;color:#9ba3c7;font-weight:600}.modal .modalBox.wide{width:min(900px,100%)}
+@media(max-width:900px){.packageGrid,.perkGrid2{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.packageGrid,.perkGrid2{grid-template-columns:1fr}}
+
+/* LEVELYX Customization System */
+:root{--lx-accent:#6d43ff;--lx-accent2:#4cc9ff;--lx-glow:rgba(109,67,255,.28)}
+body.lx-customized{background:radial-gradient(circle at 20% 0%,var(--lx-glow),transparent 32%),radial-gradient(circle at 85% 20%,rgba(76,201,255,.10),transparent 28%),#070913}
+body.lx-customized header{background:linear-gradient(180deg,rgba(10,12,27,.96),rgba(10,12,27,.78));border-bottom-color:color-mix(in srgb,var(--lx-accent) 45%,#343b62)}
+body.lx-customized .logoMark,body.lx-customized .filter.active,body.lx-customized .smallBtn.primarySmall,body.lx-customized .search button{background:linear-gradient(135deg,var(--lx-accent),var(--lx-accent2));border-color:var(--lx-accent)}
+body.lx-customized .card:hover,body.lx-customized .perkCard2:hover{border-color:var(--lx-accent)}
+body.lx-customized.lx-neon{box-shadow:inset 0 0 100px var(--lx-glow)}
+#lxEffectLayer{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.lx-star{position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff,0 0 18px var(--lx-accent);animation:lxStar .65s ease-out forwards}
+.lx-star:before,.lx-star:after{content:"";position:absolute;left:50%;top:50%;background:currentColor;transform:translate(-50%,-50%);border-radius:999px}
+.lx-star:before{width:2px;height:22px}.lx-star:after{width:22px;height:2px}
+@keyframes lxStar{0%{opacity:1;transform:scale(.4) rotate(0deg)}100%{opacity:0;transform:scale(1.4) rotate(45deg);margin-top:-18px}}
+.lx-glitter{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 10px 2px var(--lx-accent2);animation:lxGlitter .7s ease-out forwards}
+@keyframes lxGlitter{0%{opacity:1;transform:scale(.5)}100%{opacity:0;transform:translateY(-22px) scale(1.2)}}
+.lx-bg-sparkles{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.28;background-image:radial-gradient(circle,rgba(255,255,255,.7) 0 1px,transparent 1.5px);background-size:55px 55px;animation:lxDrift 18s linear infinite}
+@keyframes lxDrift{to{background-position:55px 55px}}
+#customizeModal .modalBox{width:min(760px,100%)}
+.lx-theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 18px}
+.lx-theme{border:1px solid #30365a;background:#101329;color:#fff;border-radius:14px;padding:12px;text-align:left;cursor:pointer}
+.lx-theme:hover,.lx-theme.active{border-color:var(--lx-accent);box-shadow:0 0 0 1px var(--lx-accent)}
+.lx-swatch{width:34px;height:34px;border-radius:50%;margin-bottom:8px;border:2px solid #ffffff33}
+.lx-options{display:grid;gap:10px;margin-top:10px}
+.lx-option{display:flex;justify-content:space-between;gap:15px;align-items:center;border:1px solid #30365a;background:#0c0f20;border-radius:13px;padding:12px}
+.lx-option input{width:20px;height:20px;accent-color:var(--lx-accent)}
+@media(max-width:600px){.lx-theme-grid{grid-template-columns:1fr 1fr}}
+
+</style>
+</head>
+<body>
+
+<header>
+<div class="nav">
+  <a class="logo" href="#top"><span class="logoMark"><b>LX</b></span>LEVELYX</a>
+  <nav>
+    <a href="#games">Games</a><a href="#live">Live</a><a href="#community">Community</a><a href="#pex">PEX</a><a href="#ai">Game AI</a>
+  </nav>
+  <button class="languagePill" onclick="openLanguage()" id="languageButton">🌐 English</button>
+  <button class="aiBtn" onclick="openAI()">✨ Game AI</button><button class="smallBtn" onclick="openAccount()">👤 Account</button>
+</div>
+</header>
+
+<main id="top">
+<div class="container">
+<section class="hero">
+  <div>
+    <div class="kicker">THE GAMING UNIVERSE</div>
+    <h1>Discover.<br>Watch. Connect.<br>Play.</h1>
+    <p>LEVELYX is your gaming hub for discovering games, watching creators, finding live streams and building a gaming community.</p>
+    <div class="search">
+      <input id="searchInput" placeholder="Search games, genres or platforms..." autocomplete="off">
+      <button onclick="runSearch()">Search</button>
+    </div>
+    <div id="searchResults" class="resultBox"></div>
+  </div>
+  <div class="heroCard">
+    <h3>🌐 Universal Game Search</h3>
+    <p>Right now this version searches the games inside LEVELYX. The real worldwide database will be connected later through a backend and a rated game-data provider.</p>
+    <div class="pills"><span class="pill">Safe catalog</span><span class="pill">Age-aware</span><span class="pill">PC</span><span class="pill">Console</span><span class="pill">Mobile</span></div>
+  </div>
+</section>
+
+<div class="ad"><div><strong>LEVELYX AD SPACE #1</strong>Helpful gaming-related sponsorships only. Ads stay limited.</div></div>
+
+<section id="games" class="section">
+  <div class="sectionHead"><div><h2>Game Library</h2><p>Search and open a game's LEVELYX page.</p></div></div>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="gameGrid"></div>
+</section>
+
+<section id="live" class="section">
+  <div class="sectionHead"><div><h2>🔴 Live</h2><p>Streaming interface now; real broadcasting comes when LEVELYX has its backend.</p></div><button class="primary" onclick="showLiveNotice()">Go Live</button></div>
+  <div class="liveGrid">
+    <div class="liveMain">
+      <div class="liveScreen"><div><div style="font-size:45px">▶</div><h3>LEVELYX LIVE</h3><p style="color:var(--muted);margin-top:7px">Live video will connect here in the streaming phase.</p></div></div>
+    </div>
+    <div class="streamList">
+      <div class="stream"><div class="avatar">A</div><div><b>ArcadeNova</b><br><small>Playing a featured game</small></div><span style="margin-left:auto;color:#ff6684">LIVE</span></div>
+      <div class="stream"><div class="avatar">K</div><div><b>KingFlux</b><br><small>Community session</small></div><span style="margin-left:auto;color:#ff6684">LIVE</span></div>
+      <div class="stream"><div class="avatar">L</div><div><b>LevelLord</b><br><small>Game challenge</small></div><span style="margin-left:auto;color:#ff6684">LIVE</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="community" class="section">
+  <div class="sectionHead"><div><h2>💬 Community</h2><p>This demo stores posts on this computer using localStorage.</p></div></div>
+  <div class="communityGrid">
+    <div class="communityBox">
+      <h3>Create a post</h3>
+      <p style="color:var(--muted);margin:7px 0 15px">Share a game thought, update, clip idea or question.</p>
+      <textarea id="postText" placeholder="What's happening in your gaming world?"></textarea>
+      <button class="primary" style="margin-top:10px;width:100%" onclick="addPost()">Post to Community</button>
+    </div>
+    <div class="communityBox">
+      <h3>Community Feed</h3>
+      <div id="feed"></div>
+    </div>
+  </div>
+</section>
+
+<section id="pex" class="section">
+  <div class="sectionHead"><div><h2>⚡ LEVELYX PEX</h2><p>PEX is LEVELYX's virtual currency. Buy PEX with local currency, then spend it on perks.</p></div></div>
+  <div class="walletBar">
+    <div class="walletChip">💎 <b>PEX Wallet:</b> <span id="pexBalance">0 PEX</span></div>
+    <button class="smallBtn primarySmall" onclick="openBuyPEX()">Buy PEX</button>
+    <button class="smallBtn" onclick="scrollToPerks()">Perks Center</button>
+  </div>
+  <div class="walletNotice">Your regional pricing is selected in your LEVELYX account. PEX itself is always shown as PEX — no exchange-rate comparison is displayed.</div>
+  <div class="search" style="max-width:100%;margin-top:16px">
+    <input id="pexSearch" placeholder="Search perks, PEX or features..." autocomplete="off">
+    <button onclick="searchPEX()">Search</button>
+  </div>
+  <div id="pexResults" class="resultBox"></div>
+  <div class="pexHero" style="margin-top:16px">
+    <div><span class="pexBadge">PEX WALLET</span><h3 style="font-size:30px;margin:12px 0 8px">Buy PEX. Spend PEX. Unlock perks.</h3><p style="color:var(--muted);line-height:1.6">Your PEX wallet is tied to this development account on this device. Real purchases will be connected only after secure accounts and payment infrastructure are ready.</p></div>
+    <div class="pexCard"><b>Current balance</b><div class="price" id="pexBalanceHero">0 PEX</div><div class="meta">Your demo wallet is saved locally on this computer.</div><button class="smallBtn primarySmall" style="width:100%;margin-top:12px" onclick="openBuyPEX()">Add PEX</button></div>
+  </div>
+  <div class="sectionHead" style="margin-top:28px"><div><h3>🛒 Buy PEX</h3><p>Choose a regional price package.</p></div></div>
+  <div class="packageGrid" id="packageGrid"></div>
+  <div id="perksCenter" class="sectionHead" style="margin-top:32px"><div><h3>✨ Perks Center</h3><p>Spend your PEX on LEVELYX features.</p></div></div>
+  <div class="perkGrid2" id="perkGrid"></div>
+  <div class="ad"><div><strong>LEVELYX AD SPACE #2</strong>A second limited ad slot for relevant gaming sponsors.</div></div>
+</section>
+
+<section class="section">
+  <div class="ad"><div><strong>LEVELYX AD SPACE #3</strong>One more limited sponsor slot — no ad spam.</div></div>
+</section>
+
+<section id="ai" class="section">
+  <div class="sectionHead"><div><h2>🧠 LEVELYX Game Brain</h2><p>Pick your style and get suggestions from the current safe catalog.</p></div><button class="primary" onclick="openAI()">Open Game AI</button></div>
+</section>
+</div>
+</main>
+
+<div class="modal languageModal" id="languageModal">
+ <div class="modalBox">
+  <div class="modalTop"><div><h2>Choose your language</h2><p class="helper">Choose the language LEVELYX should use. English is selected by default.</p></div><button class="close" onclick="closeLanguage()">✕</button></div>
+  <div class="languageOptions" id="languageOptions"></div>
+ </div>
+</div>
+
+<div class="modal" id="buyPEXModal">
+  <div class="modalBox wide">
+    <div class="modalTop"><div><h2>💎 Buy PEX</h2><p class="helper">Choose a package using the currency assigned to your account region. This development build does not process real payments.</p></div><button class="close" onclick="closeBuyPEX()">✕</button></div>
+    <div class="packageGrid" id="packageGridModal"></div>
+    <div class="walletNotice">Your current demo balance: <b id="pexModalBalance">0 PEX</b></div>
+  </div>
+</div>
+
+<div class="modal" id="accountModal">
+  <div class="modalBox wide">
+    <div class="modalTop"><div><h2>👤 LEVELYX Account</h2><p style="color:var(--muted);margin-top:5px">Create an account, choose your region, and LEVELYX will show only your regional currency.</p></div><button class="close" onclick="closeAccount()">✕</button></div>
+    <div class="formGrid">
+      <label>Email address<input id="accountEmail" class="input" type="email" placeholder="you@example.com" autocomplete="email"></label>
+      <label>Display name<input id="accountName" class="input" type="text" placeholder="Your LEVELYX name" maxlength="30"></label>
+      <label>Region
+        <select id="accountRegion" class="input">
+          <option value="NG">🇳🇬 Nigeria</option><option value="US">🇺🇸 United States</option><option value="GB">🇬🇧 United Kingdom</option><option value="JP">🇯🇵 Japan</option><option value="FR">🇫🇷 France</option><option value="ES">🇪🇸 Spain</option>
+        </select>
+      </label>
+      <label>Password<input id="accountPassword" class="input" type="password" placeholder="Create a password" autocomplete="new-password"></label>
+    </div>
+    <p class="helper" style="margin-top:12px">For this build, account details are stored only in this browser. A real cross-device account system will use secure authentication and a database before public account data is enabled.</p>
+    <div class="walletNotice" style="margin-top:14px"><b>Creator account?</b> Your private Creator/Admin account is separate from normal player accounts and will have access to the LEVELYX control dashboard.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="createOrSignInAccount()">Create / Sign in</button><button class="smallBtn" onclick="closeAccount()">Close</button></div>
+    <div id="accountStatus" class="notice" style="display:none;margin-top:14px"></div>
+    <div id="creatorPanel" style="display:none;margin-top:16px" class="notice"><b>👑 Creator/Admin Mode</b><p style="margin-top:7px;color:var(--muted)">You are using the local creator workspace. This is for development/testing; public admin authentication will be secured in the backend.</p><button class="smallBtn primarySmall" style="margin-top:10px" onclick="openCreatorDashboard()">Open Creator Dashboard</button></div>
+  </div>
+</div>
+
+<button class="accountFab" onclick="openAccount()"><span class="accountDot">LX</span><span id="accountLabel">Sign in</span></button>
+
+<div class="aiPanel" id="aiPanel">
+<div class="aiBox">
+  <div class="aiBoxTop"><div><h2>✨ LEVELYX Game AI</h2><p style="color:var(--muted);margin-top:5px">Find games by genre, platform and style.</p></div><button class="close" onclick="closeAI()">✕</button></div>
+  <div class="formGrid">
+    <select id="aiGenre"><option value="All">Any genre</option><option>Action</option><option>RPG</option><option>Adventure</option><option>Sports</option><option>Sandbox</option><option>Simulation</option><option>Multiplayer</option></select>
+    <select id="aiPlatform"><option value="All">Any platform</option><option>Roblox</option><option>PC</option><option>Console</option><option>Mobile</option></select>
+  </div>
+  <button class="primary" style="width:100%;margin-top:12px" onclick="recommend()">Recommend Games</button>
+  <div class="aiResults" id="aiResults"></div>
+</div>
+</div>
+
+<footer>
+<div class="container"><b>LEVELYX Game Hub</b><br><span>Discover • Watch • Connect • Play</span></div>
+</footer>
+
+<script>
+const games = [
+ {id:"roblox",name:"Roblox",genre:["Adventure","Simulation","Multiplayer"],platform:["PC","Console","Mobile"],style:["Social","Creative","Multiplayer"],image:"",play:"https://www.roblox.com/",desc:"A platform containing millions of community-created experiences.",safe:true},
+ {id:"minecraft",name:"Minecraft",genre:["Adventure","Sandbox","Survival","Multiplayer"],platform:["PC","Console","Mobile"],style:["Creative","Survival","Building"],image:"assets/games/minecraft.jpg",play:"https://www.minecraft.net/",desc:"Explore, build, craft and survive in a huge sandbox world.",safe:true},
+ {id:"fc26",name:"EA SPORTS FC 26",genre:["Sports","Simulation","Multiplayer"],platform:["PC","Console","Mobile"],style:["Competitive","Sports","Online"],image:"assets/games/fc26.jpg",play:"https://www.ea.com/games/ea-sports-fc/fc-26",desc:"Football action with club, career and competitive modes.",safe:true},
+ {id:"rocket-league",name:"Rocket League",genre:["Sports","Action","Multiplayer"],platform:["PC","Console"],style:["Competitive","Sports","Fast"],image:"assets/games/rocket-league.jpg",play:"https://www.rocketleague.com/",desc:"High-speed soccer played with rocket-powered cars.",safe:true},
+ {id:"fortnite",name:"Fortnite",genre:["Action","Shooter","Multiplayer"],platform:["PC","Console","Mobile"],style:["Competitive","Building","Battle"],image:"assets/games/fortnite.jpg",play:"https://www.fortnite.com/",desc:"A large multiplayer game with battle royale and creator-made experiences.",safe:true},
+ {id:"street-fighter-6",name:"Street Fighter 6",genre:["Action","Fighting","Multiplayer"],platform:["PC","Console"],style:["Competitive","Fighting","Skill"],image:"assets/games/street-fighter-6.jpg",play:"https://www.streetfighter.com/6/",desc:"A modern fighting game built around competitive combat and multiple play modes.",safe:true},
+ {id:"tekken-8",name:"TEKKEN 8",genre:["Action","Fighting","Multiplayer"],platform:["PC","Console"],style:["Competitive","Fighting","Skill"],image:"assets/games/tekken-8.jpg",play:"https://en.bandainamcoent.eu/tekken/tekken-8",desc:"Fast 3D fighting action with a large roster and competitive play.",safe:true},
+ {id:"valorant",name:"VALORANT",genre:["Action","Shooter","Multiplayer"],platform:["PC","Console"],style:["Competitive","Tactical","Team"],image:"assets/games/valorant.jpg",play:"https://playvalorant.com/",desc:"A tactical team-based shooter focused on precision, abilities and strategy.",safe:true}
+];
+
+const filters=["All","Action","RPG","Adventure","Sports","Sandbox","Survival","Simulation","Puzzle","Multiplayer"];
+let activeFilter="All";
+
+function renderFilters(){
+ const el=document.getElementById("filters");
+ el.innerHTML=filters.map(f=>`<button class="filter ${f===activeFilter?"active":""}" onclick="setFilter('${f}')">${f}</button>`).join("");
+}
+function setFilter(f){activeFilter=f;renderFilters();renderGames();}
+function fallbackIcon(name){
+ const letters=name.split(" ").map(x=>x[0]).slice(0,2).join("");
+ return `<div class="coverFallback">${letters}</div>`;
+}
+function renderGames(list=games){
+ const grid=document.getElementById("gameGrid");
+ let filtered=list.filter(g=>g.safe && (activeFilter==="All" || g.genre.includes(activeFilter)));
+ if(!filtered.length){grid.innerHTML='<div class="empty">No matching safe games in the current LEVELYX catalog yet.</div>';return;}
+ grid.innerHTML=filtered.map(g=>`
+ <article class="card">
+  <div class="cover">
+   ${g.image?`<img src="${g.image}" alt="${g.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:""}
+   <div style="${g.image?'display:none':''}" class="coverFallback">${g.name.split(" ").map(x=>x[0]).slice(0,2).join("")}</div>
+   <span class="badge">${g.platform.join(" • ")}</span>
+  </div>
+  <div class="cardBody">
+   <h3>${g.name}</h3><div class="meta">${g.genre.slice(0,3).join(" • ")}<br>${g.desc}</div>
+   <div class="actions"><button class="smallBtn" onclick="viewGame('${g.id}')">View</button><button class="smallBtn primarySmall" onclick="playGame('${g.id}')">Play / Visit</button></div>
+  </div>
+ </article>`).join("");
+}
+function findGames(q){
+ q=q.toLowerCase().trim();
+ if(!q)return games;
+ return games.filter(g=>(g.name+" "+g.genre.join(" ")+" "+g.platform.join(" ")+" "+g.style.join(" ")).toLowerCase().includes(q));
+}
+function runSearch(){
+ const q=document.getElementById("searchInput").value;
+ const matches=findGames(q);
+ const box=document.getElementById("searchResults");
+ box.classList.add("show");
+ if(!q){box.innerHTML='<div class="notice">Type a game, genre or platform.</div>';return;}
+ if(matches.length){
+  box.innerHTML='<div class="notice"><b>LEVELYX found '+matches.length+' result(s).</b><div style="margin-top:10px">'+matches.map(g=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid #252b4a"><span>${g.name}</span><button class="smallBtn primarySmall" style="max-width:120px" onclick="viewGame('${g.id}')">Open</button></div>`).join("")+'</div></div>';
+ }else{
+  box.innerHTML='<div class="notice"><b>Not in the current LEVELYX catalog.</b><br><span style="color:#9ba3c7">The worldwide game database is a later backend upgrade. LEVELYX will use age-rating data before adding broad search.</span></div>';
+ }
+}
+document.getElementById("searchInput").addEventListener("keydown",e=>{if(e.key==="Enter")runSearch()});
+function viewGame(id){location.href="game.html?game="+encodeURIComponent(id)}
+function playGame(id){const g=games.find(x=>x.id===id);if(g)window.open(g.play,"_blank","noopener")}
+function openAI(){document.getElementById("aiPanel").classList.add("open")}
+function closeAI(){document.getElementById("aiPanel").classList.remove("open")}
+function recommend(){
+ const genre=document.getElementById("aiGenre").value, platform=document.getElementById("aiPlatform").value;
+ const list=games.filter(g=>g.safe&&(genre==="All"||g.genre.includes(genre))&&(platform==="All"||g.platform.includes(platform))).slice(0,5);
+ document.getElementById("aiResults").innerHTML=list.length?list.map(g=>`<div class="aiResult"><div><b>${g.name}</b><br><small style="color:#9ba3c7">${g.genre.join(" • ")}</small></div><button class="smallBtn primarySmall" style="max-width:100px" onclick="viewGame('${g.id}')">Open</button></div>`).join(""):"<div class='notice'>No matching games in the current catalog.</div>";
+}
+function showLiveNotice(){alert("The Live interface is ready. Actual broadcasting needs a streaming backend/provider, which we will connect in the next build stage.");}
+
+function loadPosts(){
+ const posts=JSON.parse(localStorage.getItem("levelyxPosts")||"[]");
+ const feed=document.getElementById("feed");
+ if(!posts.length){feed.innerHTML='<div class="notice" style="margin-top:12px">No posts yet. Be the first to post.</div>';return;}
+ feed.innerHTML=posts.map((p,i)=>`<div class="post"><div class="postTop"><b>${p.name}</b><small style="color:#8e96b8">${p.time}</small></div><div class="postText">${escapeHtml(p.text)}</div><div class="postActions"><button class="smallBtn" onclick="likePost(${i})">👍 ${p.likes}</button><button class="smallBtn" onclick="deletePost(${i})">Delete</button></div></div>`).join("");
+}
+function addPost(){
+ const text=document.getElementById("postText").value.trim();
+ if(!text){alert("Write something first.");return;}
+ const posts=JSON.parse(localStorage.getItem("levelyxPosts")||"[]");
+ posts.unshift({name:"You",text,likes:0,time:new Date().toLocaleString()});
+ localStorage.setItem("levelyxPosts",JSON.stringify(posts.slice(0,30)));
+ document.getElementById("postText").value="";loadPosts();
+}
+function likePost(i){const posts=JSON.parse(localStorage.getItem("levelyxPosts")||"[]");posts[i].likes++;localStorage.setItem("levelyxPosts",JSON.stringify(posts));loadPosts()}
+function deletePost(i){const posts=JSON.parse(localStorage.getItem("levelyxPosts")||"[]");posts.splice(i,1);localStorage.setItem("levelyxPosts",JSON.stringify(posts));loadPosts()}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+
+const pexPackages=[
+ {pex:100,prices:{NG:"₦700",US:"$1",GB:"£1",JP:"¥150",FR:"€1",ES:"€1"}},
+ {pex:500,prices:{NG:"₦3,500",US:"$5",GB:"£5",JP:"¥750",FR:"€5",ES:"€5"}},
+ {pex:1000,prices:{NG:"₦7,000",US:"$10",GB:"£10",JP:"¥1,500",FR:"€10",ES:"€10"}},
+ {pex:2500,prices:{NG:"₦17,500",US:"$25",GB:"£25",JP:"¥3,750",FR:"€25",ES:"€25"}},
+ {pex:5000,prices:{NG:"₦35,000",US:"$50",GB:"£50",JP:"¥7,500",FR:"€50",ES:"€50"}},
+ {pex:10000,prices:{NG:"₦70,000",US:"$100",GB:"£100",JP:"¥15,000",FR:"€100",ES:"€100"}}
+];
+const perkItems=[
+ {id:"adfree30",name:"No Ads — 30 days",keywords:"remove ads no ads ad free",icon:"🚫",cost:1000,desc:"Hide standard LEVELYX ad slots for 30 days in this prototype."},
+ {id:"adfree90",name:"No Ads — 90 days",keywords:"remove ads no ads ad free",icon:"🚫",cost:2500,desc:"Hide standard LEVELYX ad slots for 90 days in this prototype."},
+ {id:"adfree365",name:"No Ads — 1 year",keywords:"remove ads no ads ad free",icon:"🛡️",cost:8000,desc:"Hide standard LEVELYX ad slots for one year in this prototype."},
+ {id:"brain30",name:"Game Brain+ — 30 days",keywords:"game brain ai recommendations discovery",icon:"🧠",cost:700,desc:"Unlock the planned enhanced Game Brain feature for 30 days."},
+ {id:"creator30",name:"Creator Perks — 30 days",keywords:"creator tools live streaming clips giveaways",icon:"🎥",cost:1200,desc:"Unlock planned creator-focused tools for 30 days."},
+ {id:"profile",name:"Profile Customization Pack",keywords:"profile homepage colors themes effects sparkles glitter customization cosmetics",icon:"🎨",cost:400,desc:"Unlock homepage themes, colors, tap stars, glitter swipes and visual effects."}
+];
+function getPEX(){return Number(localStorage.getItem("levelyxPEX")||0)}
+function setPEX(n){localStorage.setItem("levelyxPEX",String(Math.max(0,Math.floor(n))));updatePEXUI()}
+function updatePEXUI(){
+ const b=getPEX();
+ ["pexBalance","pexBalanceHero","pexModalBalance"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=b.toLocaleString()+" PEX"});
+ renderAds();
+}
+function renderPackageCards(targetId){
+ const el=document.getElementById(targetId); if(!el)return;
+ const region=localStorage.getItem("levelyxRegion")||"NG"; const currency=(p.prices||{})[region]||p.prices.NG; el.innerHTML=pexPackages.map(p=>`<article class="packageCard"><div class="pexAmount">${p.pex.toLocaleString()} PEX</div><div class="realPrice">${currency}</div><div class="meta">Regional price</div><button class="smallBtn primarySmall" style="width:100%;margin-top:12px" onclick="demoBuyPEX(${p.pex})">Add ${p.pex.toLocaleString()} PEX</button></article>`).join("");
+}
+function renderPerks(){
+ const grid=document.getElementById("perkGrid"); if(!grid)return;
+ grid.innerHTML=perkItems.map(p=>{const owned=p.id==='profile'&&hasCustomization();return `<article class="perkCard2"><div style="font-size:28px">${p.icon}</div><h3>${p.name}</h3><div class="meta">${p.desc}</div><div class="perkPrice">${owned?'Unlocked':p.cost.toLocaleString()+' PEX'} ${owned?'':'<small>to unlock</small>'}</div><button class="smallBtn primarySmall" style="width:100%" onclick="${owned?'openCustomization()':`spendPEX('${p.id}')`}">${owned?'Customize':'Spend PEX'}</button></article>`}).join("");
+ renderPackageCards("packageGrid"); renderPackageCards("packageGridModal");
+}
+function demoBuyPEX(amount){setPEX(getPEX()+amount);alert(`Demo wallet updated: +${amount.toLocaleString()} PEX. New balance: ${getPEX().toLocaleString()} PEX.`);closeBuyPEX()}
+function openBuyPEX(){document.getElementById("buyPEXModal").classList.add("open");renderPackageCards("packageGridModal");updatePEXUI()}
+function closeBuyPEX(){document.getElementById("buyPEXModal").classList.remove("open")}
+function scrollToPerks(){document.getElementById("perksCenter").scrollIntoView({behavior:"smooth"})}
+function spendPEX(id){
+ const p=perkItems.find(x=>x.id===id); if(!p)return;
+ const balance=getPEX();
+ if(balance<p.cost){alert(`Not enough PEX. You need ${(p.cost-balance).toLocaleString()} more PEX.`);return;}
+ setPEX(balance-p.cost);
+ if(p.id.startsWith("adfree")){localStorage.setItem("levelyxNoAdsUntil",String(Date.now()+({adfree30:30,adfree90:90,adfree365:365}[p.id])*86400000));}
+ localStorage.setItem("levelyxPerk_"+p.id,String(Date.now()));
+ alert(`${p.name} unlocked in the prototype! ${p.cost.toLocaleString()} PEX spent.`);
+}
+function renderAds(){
+ const until=Number(localStorage.getItem("levelyxNoAdsUntil")||0);
+ document.querySelectorAll(".ad").forEach(a=>a.style.display=(until>Date.now()?"none":"block"));
+}
+function searchPEX(){
+ const q=document.getElementById("pexSearch").value.toLowerCase().trim();
+ const box=document.getElementById("pexResults"); box.classList.add("show");
+ if(!q){box.innerHTML='<div class="notice">Search for no ads, Game Brain, creator perks, profile customization or PEX.</div>';return;}
+ const hits=perkItems.filter(x=>(x.name+" "+x.keywords+" "+x.desc).toLowerCase().includes(q));
+ box.innerHTML=hits.length?'<div class="notice"><b>PEX / Perk results</b>'+hits.map(x=>`<div style="padding:10px 0;border-top:1px solid #252b4a;margin-top:8px"><b>${x.icon} ${x.name}</b><br><span style="color:#9ba3c7">${x.desc}</span><br><strong>${x.cost.toLocaleString()} PEX</strong></div>`).join('')+'</div>':'<div class="notice">No matching perk found.</div>';
+}
+document.getElementById("pexSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchPEX()});
+const languages=[
+ {code:"en",name:"English",native:"English"},
+ {code:"ja",name:"Japanese",native:"日本語"},
+ {code:"ur",name:"Urdu (Pakistan)",native:"اردو (پاکستان)"},
+ {code:"fr",name:"French",native:"Français"},
+ {code:"es",name:"Spanish",native:"Español"}
+];
+function choosePerk(id){const p=perkItems.find(x=>x.id===id);if(p){alert(p.name+" selected. Real secure checkout will be connected in the backend phase.");}}
+document.getElementById("pexSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchPEX()});
+function openLanguage(){document.getElementById("languageModal").classList.add("open")}
+function closeLanguage(){document.getElementById("languageModal").classList.remove("open")}
+function renderLanguages(){
+ const current=localStorage.getItem("levelyxLanguage")||"en";
+ const el=document.getElementById("languageOptions");
+ el.innerHTML=languages.map(l=>`<button class="languageOption ${l.code===current?'active':''}" onclick="selectLanguage('${l.code}')">${l.name}<br><small style="color:#9ba3c7">${l.native}</small></button>`).join("");
+ document.getElementById("languageButton").textContent="🌐 "+(languages.find(x=>x.code===current)||languages[0]).name;
+}
+function selectLanguage(code){localStorage.setItem("levelyxLanguage",code);renderLanguages();closeLanguage();}
+function initLanguage(){
+ if(!localStorage.getItem("levelyxLanguage")){localStorage.setItem("levelyxLanguage","en");renderLanguages();setTimeout(openLanguage,350);}
+ else renderLanguages();
+}
+
+function openAccount(){document.getElementById("accountModal").classList.add("open");loadDemoProfile();}
+function closeAccount(){document.getElementById("accountModal").classList.remove("open")}
+function createOrSignInAccount(){
+ const email=document.getElementById("accountEmail").value.trim();
+ const name=document.getElementById("accountName").value.trim()||"LEVELYX Player";
+ const region=document.getElementById("accountRegion").value;
+ const status=document.getElementById("accountStatus");
+ if(!email){status.style.display="block";status.textContent="Enter an email address to continue.";return;}
+ localStorage.setItem("levelyxDemoProfile",JSON.stringify({email,name,region}));
+ localStorage.setItem("levelyxRegion",region);
+ document.getElementById("accountLabel").textContent=name.slice(0,18);
+ status.style.display="block";status.innerHTML='<b>Account saved on this device.</b><br>Your regional currency is now set. PEX prices will show only your selected region.';
+ document.getElementById("accountPassword").value="";
+ renderPackageCards("packageGrid"); renderPackageCards("packageGridModal"); updatePEXUI();
+ // Local creator test account: use a clearly marked development email rather than a hidden password.
+ const creator=localStorage.getItem("levelyxCreatorEnabled")==="true" || email.toLowerCase().includes("creator@levelyx.local");
+ if(creator){localStorage.setItem("levelyxCreatorEnabled","true");document.getElementById("creatorPanel").style.display="block";}
+}
+function loadDemoProfile(){
+ const p=JSON.parse(localStorage.getItem("levelyxDemoProfile")||"null"); if(!p)return;
+ document.getElementById("accountLabel").textContent=(p.name||"Player").slice(0,18);
+ document.getElementById("accountName").value=p.name||""; document.getElementById("accountEmail").value=p.email||"";
+ document.getElementById("accountRegion").value=p.region||localStorage.getItem("levelyxRegion")||"NG";
+ if(localStorage.getItem("levelyxCreatorEnabled")==="true")document.getElementById("creatorPanel").style.display="block";
+}
+function openCreatorDashboard(){
+ alert("Creator Dashboard placeholder: Games, users, PEX settings, perks, ads, moderation and publishing controls will live here. Real admin security will be added with the backend.");
+}
+
+if(!localStorage.getItem("levelyxRegion"))localStorage.setItem("levelyxRegion","NG"); renderFilters();renderGames();renderPerks();loadPosts();loadDemoProfile();initLanguage();updatePEXUI();applyCustomization();
+
+const lxThemes={
+  blue:{name:'Ocean Blue',accent:'#6d43ff',accent2:'#4cc9ff',glow:'rgba(76,201,255,.18)',swatch:'linear-gradient(135deg,#4cc9ff,#6d43ff)'},
+  purple:{name:'Royal Purple',accent:'#9b5cff',accent2:'#d36cff',glow:'rgba(155,92,255,.22)',swatch:'linear-gradient(135deg,#7a35ff,#d36cff)'},
+  red:{name:'Crimson Red',accent:'#ff3d5a',accent2:'#ff8a5c',glow:'rgba(255,61,90,.20)',swatch:'linear-gradient(135deg,#ff2347,#ff8a5c)'},
+  orange:{name:'Blaze Orange',accent:'#ff7a18',accent2:'#ffd166',glow:'rgba(255,122,24,.20)',swatch:'linear-gradient(135deg,#ff6a00,#ffd166)'},
+  coffee:{name:'Coffee Brown',accent:'#a66a3f',accent2:'#e0a06b',glow:'rgba(166,106,63,.20)',swatch:'linear-gradient(135deg,#6f4228,#e0a06b)'},
+  pink:{name:'Neon Pink',accent:'#ff4fd8',accent2:'#8c7bff',glow:'rgba(255,79,216,.20)',swatch:'linear-gradient(135deg,#ff4fd8,#8c7bff)'}
+};
+function hasCustomization(){return localStorage.getItem('levelyxPerk_profile')!==null}
+function openCustomization(){if(!hasCustomization()){alert('Unlock the Profile Customization Pack with PEX first.');return;}document.getElementById('customizeModal').classList.add('open');renderCustomization()}
+function closeCustomization(){document.getElementById('customizeModal').classList.remove('open')}
+function renderCustomization(){
+ const saved=JSON.parse(localStorage.getItem('levelyxCustomization')||'{}');
+ document.getElementById('lxThemeGrid').innerHTML=Object.entries(lxThemes).map(([id,t])=>`<button class="lx-theme ${((saved.theme||'blue')===id)?'active':''}" onclick="setTheme('${id}')"><div class="lx-swatch" style="background:${t.swatch}"></div><b>${t.name}</b></button>`).join('');
+ ['lxTapStars','lxGlitterSwipe','lxAmbient','lxNeon'].forEach(id=>document.getElementById(id).checked=!!saved[id.replace('lx','').replace(/^./,c=>c.toLowerCase())]);
+}
+function setTheme(id){const saved=JSON.parse(localStorage.getItem('levelyxCustomization')||'{}');saved.theme=id;localStorage.setItem('levelyxCustomization',JSON.stringify(saved));applyCustomization();renderCustomization()}
+function saveCustomization(){
+ const saved=JSON.parse(localStorage.getItem('levelyxCustomization')||'{}');
+ saved.tapStars=document.getElementById('lxTapStars').checked;saved.glitterSwipe=document.getElementById('lxGlitterSwipe').checked;saved.ambient=document.getElementById('lxAmbient').checked;saved.neon=document.getElementById('lxNeon').checked;
+ localStorage.setItem('levelyxCustomization',JSON.stringify(saved));applyCustomization()
+}
+function applyCustomization(){
+ const saved=JSON.parse(localStorage.getItem('levelyxCustomization')||'{}'),t=lxThemes[saved.theme||'blue']||lxThemes.blue;
+ document.documentElement.style.setProperty('--lx-accent',t.accent);document.documentElement.style.setProperty('--lx-accent2',t.accent2);document.documentElement.style.setProperty('--lx-glow',t.glow);
+ document.body.classList.toggle('lx-customized',!!localStorage.getItem('levelyxPerk_profile'));document.body.classList.toggle('lx-neon',!!saved.neon);
+ const bg=document.getElementById('lxBgSparkles');if(bg)bg.style.display=saved.ambient?'block':'none';
+}
+function lxStar(x,y){const e=document.createElement('span');e.className='lx-star';e.style.left=x+'px';e.style.top=y+'px';document.getElementById('lxEffectLayer').appendChild(e);setTimeout(()=>e.remove(),700)}
+function lxGlitter(x,y){const e=document.createElement('span');e.className='lx-glitter';e.style.left=x+'px';e.style.top=y+'px';document.getElementById('lxEffectLayer').appendChild(e);setTimeout(()=>e.remove(),750)}
+let lxLast={x:0,y:0,time:0};
+function lxPointer(e){const s=JSON.parse(localStorage.getItem('levelyxCustomization')||'{}');const x=e.clientX,y=e.clientY;if(s.tapStars)lxStar(x,y);if(s.glitterSwipe){const now=Date.now();if(Math.hypot(x-lxLast.x,y-lxLast.y)>16 || now-lxLast.time>80){lxGlitter(x,y);lxLast={x,y,time:now}}}}
+window.addEventListener('pointerdown',e=>{const s=JSON.parse(localStorage.getItem('levelyxCustomization')||'{}');if(s.tapStars)lxStar(e.clientX,e.clientY);});
+window.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||e.buttons>0)lxPointer(e)});
+
+</script>
+
+<div id="lxEffectLayer"></div>
+<div id="lxBgSparkles" class="lx-bg-sparkles" style="display:none"></div>
+<div class="modal" id="customizeModal">
+  <div class="modalBox">
+    <div class="modalTop"><div><h2>🎨 LEVELYX Customization</h2><div class="helper">Make your LEVELYX homepage feel like yours. Changes are saved on this device.</div></div><button class="close" onclick="closeCustomization()">✕</button></div>
+    <h3>Choose a theme</h3>
+    <div class="lx-theme-grid" id="lxThemeGrid"></div>
+    <h3>Effects</h3>
+    <div class="lx-options">
+      <label class="lx-option"><span><b>✨ Tap Stars</b><br><small class="helper">Flashy stars appear where you tap or click.</small></span><input id="lxTapStars" type="checkbox" onchange="saveCustomization()"></label>
+      <label class="lx-option"><span><b>💎 Glitter Swipe</b><br><small class="helper">Sparkles trail behind touch and mouse swipes.</small></span><input id="lxGlitterSwipe" type="checkbox" onchange="saveCustomization()"></label>
+      <label class="lx-option"><span><b>🌌 Ambient Sparkles</b><br><small class="helper">A subtle moving sparkle field behind the page.</small></span><input id="lxAmbient" type="checkbox" onchange="saveCustomization()"></label>
+      <label class="lx-option"><span><b>⚡ Neon Glow</b><br><small class="helper">Adds a stronger glow around the customized interface.</small></span><input id="lxNeon" type="checkbox" onchange="saveCustomization()"></label>
+    </div>
+    <div class="actions" style="margin-top:18px"><button class="smallBtn" onclick="resetCustomization()">Reset</button><button class="smallBtn primarySmall" onclick="closeCustomization()">Done</button></div>
+  </div>
+</div>
+
+</body>
+</html>
